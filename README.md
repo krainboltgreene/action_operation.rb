@@ -9,13 +9,95 @@ scrawl
   - [![Gittip](http://img.shields.io/gittip/krainboltgreene.png)](https://www.gittip.com/krainboltgreene/)
   - [![License](http://img.shields.io/license/MIT.png?color=green)](http://opensource.org/licenses/MIT)
 
-TODO: Write a gem description
+This is a simple object that turns hashes, even nested, into Heroku like log strings.
+
+It is a smaller, faster, and I believe more OO way to do [scrolls](https://github.com/asenchi/scrolls).
 
 
 Using
 =====
 
-TODO: Write usage instructions here
+The `Scrawl` object gives you a simple interface:
+
+``` ruby
+require "scrawl"
+
+data = Scrawl.new(app: "scrawl", state: 0)
+data.inspect
+  # => "app=\"scrawl\" state=0"
+puts data.inspect
+  # => app="scrawl" state=0
+```
+
+It also does some nice things:
+
+``` ruby
+require "scrawl"
+
+data = Scrawl.new(now: -> { Time.now })
+puts data.inspect
+  # => now="2014-04-13 01:36:18 -0500"
+puts data.inspect
+  # => now="2014-04-13 01:36:19 -0500"
+puts data.inspect
+  # => now="2014-04-13 01:36:20 -0500"
+```
+
+You can also handle a "global" set of values:
+
+``` ruby
+require "logger"
+require "scrawl"
+
+logger = Logger.new(STDOUT)
+global = Scrawl.new(now: -> { Time.now }, app: "scrawl", state: 0)
+
+# ...
+
+def report_user(user)
+  user.report!
+  logger.info(global.merge(message: "Bank has been reported."))
+    # => now="2014-04-13 01:36:20 -0500" app="scrawl" state=0 message="Bank has been reported."
+end
+
+# ...
+```
+
+We've also got a way to combine multiple statement objects:
+
+``` ruby
+require "logger"
+require "scrawl"
+
+logger = Logger.new(STDOUT)
+
+global = Scrawl.new(now: -> { Time.now })
+application = Scrawl.new(app: "scrawl", version: ENV["VERSION"])
+
+logger.info(Scrawl.new(global, application, message: "Hello, World"))
+```
+
+Finall, nesting:
+
+``` ruby
+require "scrawl"
+
+global = Scrawl.new(now: -> { Time.now })
+application = Scrawl.new(app: { name: "scrawl", version: ENV["VERSION"] })
+
+# ...
+
+def report_user(user)
+  begin
+    user.report!
+  rescue => exception
+  logger.info(global.merge(global, application, error: { exception: exception, message: "Bank wasnt been reported." }))
+    # => now="2014-04-13 01:36:20 -0500" app.name="scrawl" app.version=0 error.exception=... error.message="Bank has been reported."
+  end
+end
+
+# ...
+```
 
 
 Installing
