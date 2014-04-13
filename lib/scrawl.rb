@@ -4,9 +4,9 @@ require "forwardable"
 class Scrawl
   extend Forwardable
 
-  KEY_VALUE_DELIMITER = "=".freeze
-  PAIR_DELIMITER = " ".freeze
-  NAMESPACE_DELIMITER = ".".freeze
+  KEY_VALUE_DELIMITER = "="
+  PAIR_DELIMITER = " "
+  NAMESPACE_DELIMITER = "."
 
   attr_reader :tree
   def_delegator :tree, :to_hash
