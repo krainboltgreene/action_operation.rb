@@ -1,5 +1,5 @@
 # This is the main namespace for your gem
-module Scrawl
+class Scrawl
   # Your code goes here...
 end
 
