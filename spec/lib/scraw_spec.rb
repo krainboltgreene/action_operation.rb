@@ -83,7 +83,7 @@ describe Scrawl do
       context "and text value" do
         let(:input) { { a: "example" } }
 
-        it "escapes the value" do
+        it "includes the escaped text" do
           expect(inspect).to include("\"example\"")
         end
       end
