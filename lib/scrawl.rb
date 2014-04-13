@@ -17,7 +17,7 @@ class Scrawl
   end
 
   def merge(hash)
-    @tree.merge(hash.to_h)
+    @tree.merge!(hash.to_hash)
   end
 
   def inspect(namespace = nil)
