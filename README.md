@@ -129,7 +129,7 @@ Contributing
 Licensing
 =========
 
-Copyright (c) 2013 Kurtis Rainbolt-Greene
+Copyright (c) 2014 Kurtis Rainbolt-Greene
 
 MIT License
 
