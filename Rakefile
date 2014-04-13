@@ -4,8 +4,6 @@ require "rspec/core/rake_task"
 require "rubocop/rake_task"
 require "yard"
 
-ENV["COVERALLS_NOISY"] = "true"
-
 desc "Check all files for style guidelines"
 Rubocop::RakeTask.new
 

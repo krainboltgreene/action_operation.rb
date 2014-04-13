@@ -1,7 +1,5 @@
-require "coveralls"
-Coveralls.wear! do
-  add_filter "/spec/"
-end
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
 
 require "pry"
 require "rspec"
