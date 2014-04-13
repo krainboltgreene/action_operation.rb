@@ -1,13 +1,15 @@
 scrawl
 --------
 
-  - [![Version](https://badge.fury.io/rb/scrawl.png)](https://rubygems.org/gems/scrawl)
-  - [![Climate](https://codeclimate.com/github/krainboltgreene/scrawl.png)](https://codeclimate.com/github/krainboltgreene/scrawl)
-  - [![Build](http://img.shields.io/travis-ci/krainboltgreene/scrawl.png)](https://travis-ci.org/krainboltgreene/scrawl)
-  - [![Dependencies](https://gemnasium.com/krainboltgreene/scrawl.png)](https://gemnasium.com/krainboltgreene/scrawl)
-  - [![Coverage](http://img.shields.io/coveralls/krainboltgreene/scrawl.png)](https://coveralls.io/r/krainboltgreene/scrawl)
+  - [![Version](http://img.shields.io/gem/v/scrawl.gem.svg)](https://rubygems.org/gems/scrawl)
+  - [![Climate](http://img.shields.io/codeclimate/github/krainboltgreene/scrawl.gem.svg)](https://codeclimate.com/github/krainboltgreene/scrawl.gem)
+  - [![Build](http://img.shields.io/travis/krainboltgreene/scrawl.gem.svg)](https://travis-ci.org/krainboltgreene/scrawl.gem)
+  - [![Dependencies](http://img.shields.io/gemnasium/krainboltgreene/scrawl.svg)](https://gemnasium.com/krainboltgreene/scrawl)
+  - [![Coverage](http://img.shields.io/codeclimate/coverage/github/krainboltgreene/scrawl.gem.svg)](https://codeclimate.com/github/krainboltgreene/scrawl.gem)
   - [![Gittip](http://img.shields.io/gittip/krainboltgreene.png)](https://www.gittip.com/krainboltgreene/)
   - [![License](http://img.shields.io/license/MIT.png?color=green)](http://opensource.org/licenses/MIT)
+  - ![Tag](http://img.shields.io/github/tag/krainboltgreene/scrawl.gem.svg)]
+  - ![Release](http://img.shields.io/github/release/krainboltgreene/scrawl.gem.svg)]
 
 This is a simple object that turns hashes, even nested, into Heroku like log strings.
 
