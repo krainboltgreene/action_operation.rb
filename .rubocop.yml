@@ -1,6 +1,6 @@
 AllCops:
   Exclude:
-    - bench/**/*
+    - bench/*
 
 StringLiterals:
   EnforcedStyle: double_quotes
