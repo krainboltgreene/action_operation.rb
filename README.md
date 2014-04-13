@@ -1,11 +1,11 @@
-blankgem
+scrawl
 --------
 
-  - [![Version](https://badge.fury.io/rb/blankgem.png)](https://rubygems.org/gems/blankgem)
-  - [![Climate](https://codeclimate.com/github/krainboltgreene/blankgem.png)](https://codeclimate.com/github/krainboltgreene/blankgem)
-  - [![Build](http://img.shields.io/travis-ci/krainboltgreene/blankgem.png)](https://travis-ci.org/krainboltgreene/blankgem)
-  - [![Dependencies](https://gemnasium.com/krainboltgreene/blankgem.png)](https://gemnasium.com/krainboltgreene/blankgem)
-  - [![Coverage](http://img.shields.io/coveralls/krainboltgreene/blankgem.png)](https://coveralls.io/r/krainboltgreene/blankgem)
+  - [![Version](https://badge.fury.io/rb/scrawl.png)](https://rubygems.org/gems/scrawl)
+  - [![Climate](https://codeclimate.com/github/krainboltgreene/scrawl.png)](https://codeclimate.com/github/krainboltgreene/scrawl)
+  - [![Build](http://img.shields.io/travis-ci/krainboltgreene/scrawl.png)](https://travis-ci.org/krainboltgreene/scrawl)
+  - [![Dependencies](https://gemnasium.com/krainboltgreene/scrawl.png)](https://gemnasium.com/krainboltgreene/scrawl)
+  - [![Coverage](http://img.shields.io/coveralls/krainboltgreene/scrawl.png)](https://coveralls.io/r/krainboltgreene/scrawl)
   - [![Gittip](http://img.shields.io/gittip/krainboltgreene.png)](https://www.gittip.com/krainboltgreene/)
   - [![License](http://img.shields.io/license/MIT.png?color=green)](http://opensource.org/licenses/MIT)
 
@@ -23,7 +23,7 @@ Installing
 
 Add this line to your application's Gemfile:
 
-    gem "blankgem", "~> 1.0"
+    gem "scrawl", "~> 1.0"
 
 And then execute:
 
@@ -31,7 +31,7 @@ And then execute:
 
 Or install it yourself with:
 
-    $ gem install blankgem
+    $ gem install scrawl
 
 
 Contributing
