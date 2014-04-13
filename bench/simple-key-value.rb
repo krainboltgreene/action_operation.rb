@@ -3,7 +3,7 @@ require "scrawl"
 require "scrolls"
 require "securerandom"
 
-DATA = (1..5_000).map { |i| { SecureRandom.hex.to_s => SecureRandom.hex.to_s } }.inject(:merge!)
+DATA = (1..100).map { |i| { SecureRandom.hex.to_s => SecureRandom.hex.to_s } }.inject(:merge!)
 
 Scrolls.stream = StringIO.new
 
