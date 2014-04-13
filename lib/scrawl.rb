@@ -1,4 +1,5 @@
 require "forwardable"
+
 # This is the main namespace for scrawl
 class Scrawl
   extend Forwardable
@@ -21,10 +22,10 @@ class Scrawl
 
   def inspect(namespace = nil)
     @tree.map do |key, value|
-      if value.is_a?(Hash)
-        Scrawl.new(value).inspect(key)
-      else
+      unless value.respond_to?(:to_hash)
         "#{label(namespace, key)}#{KEY_VALUE_DELIMITER}#{element(value)}"
+      else
+        Scrawl.new(value).inspect(key)
       end
     end.join(PAIR_DELIMITER)
   end
@@ -32,7 +33,7 @@ class Scrawl
   private
 
   def label(namespace, key)
-    [namespace, key].compact.map(&:to_s).join(NAMESPACE_DELIMITER)
+    [namespace, key].compact.join(NAMESPACE_DELIMITER)
   end
 
   def element(value)
