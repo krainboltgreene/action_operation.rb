@@ -1,5 +1,5 @@
-write
------
+active_record-write
+-------------------
 
   - [![Quality](http://img.shields.io/codeclimate/github/laurelandwolf/active_record-write.gem.svg?style=flat-square)](https://codeclimate.com/github/laurelandwolf/active_record-write.gem)
   - [![Coverage](http://img.shields.io/codeclimate/coverage/github/laurelandwolf/active_record-write.gem.svg?style=flat-square)](https://codeclimate.com/github/laurelandwolf/active_record-write.gem)
