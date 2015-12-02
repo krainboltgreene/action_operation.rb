@@ -1,7 +1,7 @@
 require "codeclimate-test-reporter"
 require "pry"
 require "rspec"
-require "blankgem"
+require "write"
 
 RSpec.configure do |let|
   let.before("suite") do
@@ -12,7 +12,7 @@ RSpec.configure do |let|
   let.fail_fast = true
 
   # Only run a specific file, using the ENV variable
-  # Example: FILE=spec/blankgem/version_spec.rb bundle exec rake spec
+  # Example: FILE=spec/write/version_spec.rb bundle exec rake spec
   let.pattern = ENV["FILE"]
 
   # Show the slowest examples in the suite

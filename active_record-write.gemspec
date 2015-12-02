@@ -2,16 +2,16 @@
 
 lib = File.expand_path(File.join("..", "lib"), __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "blankgem/version"
+require "active_record/write/version"
 
 Gem::Specification.new do |spec|
-  spec.name = "blankgem"
-  spec.version = Blankgem::VERSION
+  spec.name = "active_record-write"
+  spec.version = ActiveRecord::Write::VERSION
   spec.authors = ["Kurtis Rainbolt-Greene"]
   spec.email = ["me@kurtisrainboltgreene.name"]
-  spec.summary = %q{TODO: Write a gem summary}
+  spec.summary = %q{A library for doing pooled writes to a SQL Datbase}
   spec.description = spec.summary
-  spec.homepage = "http://krainboltgreene.github.io/blankgem"
+  spec.homepage = "http://krainboltgreene.github.io/active_record-write"
   spec.license = "MIT"
 
   spec.files = Dir[File.join("lib", "**", "*")]
@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.test_files = Dir[File.join("test", "**", "*"), File.join("spec", "**", "*")]
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "activerecord", "~> 4.1"
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "rake", "~> 10.1"

@@ -1,25 +1,101 @@
-blankgem
---------
+write
+-----
 
-  - [![Quality](http://img.shields.io/codeclimate/github/krainboltgreene/blankgem.gem.svg?style=flat-square)](https://codeclimate.com/github/krainboltgreene/blankgem.gem)
-  - [![Coverage](http://img.shields.io/codeclimate/coverage/github/krainboltgreene/blankgem.gem.svg?style=flat-square)](https://codeclimate.com/github/krainboltgreene/blankgem.gem)
-  - [![Build](http://img.shields.io/travis-ci/krainboltgreene/blankgem.gem.svg?style=flat-square)](https://travis-ci.org/krainboltgreene/blankgem.gem)
-  - [![Dependencies](http://img.shields.io/gemnasium/krainboltgreene/blankgem.gem.svg?style=flat-square)](https://gemnasium.com/krainboltgreene/blankgem.gem)
-  - [![Downloads](http://img.shields.io/gem/dtv/blankgem.svg?style=flat-square)](https://rubygems.org/gems/blankgem)
-  - [![Tags](http://img.shields.io/github/tag/krainboltgreene/blankgem.gem.svg?style=flat-square)](http://github.com/krainboltgreene/blankgem.gem/tags)
-  - [![Releases](http://img.shields.io/github/release/krainboltgreene/blankgem.gem.svg?style=flat-square)](http://github.com/krainboltgreene/blankgem.gem/releases)
-  - [![Issues](http://img.shields.io/github/issues/krainboltgreene/blankgem.gem.svg?style=flat-square)](http://github.com/krainboltgreene/blankgem.gem/issues)
+  - [![Quality](http://img.shields.io/codeclimate/github/krainboltgreene/write.gem.svg?style=flat-square)](https://codeclimate.com/github/krainboltgreene/write.gem)
+  - [![Coverage](http://img.shields.io/codeclimate/coverage/github/krainboltgreene/write.gem.svg?style=flat-square)](https://codeclimate.com/github/krainboltgreene/write.gem)
+  - [![Build](http://img.shields.io/travis-ci/krainboltgreene/write.gem.svg?style=flat-square)](https://travis-ci.org/krainboltgreene/write.gem)
+  - [![Dependencies](http://img.shields.io/gemnasium/krainboltgreene/write.gem.svg?style=flat-square)](https://gemnasium.com/krainboltgreene/write.gem)
+  - [![Downloads](http://img.shields.io/gem/dtv/write.svg?style=flat-square)](https://rubygems.org/gems/write)
+  - [![Tags](http://img.shields.io/github/tag/krainboltgreene/write.gem.svg?style=flat-square)](http://github.com/krainboltgreene/write.gem/tags)
+  - [![Releases](http://img.shields.io/github/release/krainboltgreene/write.gem.svg?style=flat-square)](http://github.com/krainboltgreene/write.gem/releases)
+  - [![Issues](http://img.shields.io/github/issues/krainboltgreene/write.gem.svg?style=flat-square)](http://github.com/krainboltgreene/write.gem/issues)
   - [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
-  - [![Version](http://img.shields.io/gem/v/blankgem.svg?style=flat-square)](https://rubygems.org/gems/blankgem)
+  - [![Version](http://img.shields.io/gem/v/write.svg?style=flat-square)](https://rubygems.org/gems/write)
 
 
-TODO: Write a gem description
+active_record-write is an extension to active_record that gives you an interface to write high-speed inserts & updates in a manageable way.
+
+Normally developers will write migrations (as in `bin/rake db:migrate`) for changing their data. I believe this to be an anti-pattern. Every system I've worked at that has done this style has resulted in completely breaking their ability to rebuild from scratch due to the domain models or file systems changing. The ability to run `bin/rake db:drop db:create db:migrate` allows for fast:
+
+  - Clean databsase checks
+  - `schema.rb` or `structure.sql` generation
+  - Annotation
+  - *Run the application without production data*
 
 
 Using
 =====
 
-TODO: Write usage instructions here
+``` ruby
+require 'active_record/write'
+
+class Person < ActiveRecord::Base
+  # column :name, Text, index: true
+  # column :email, Text, index: { unique: true }
+  # column :encrypted_password, Text
+end
+```
+
+``` sql
+CREATE TABLE persons (
+    id uuid NOT NULL,
+    first_name text,
+    last_name text,
+    name text,
+    email text,
+    encryped_passwrd text,
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+CREATE UNIQUE INDEX index_persons_on_email ON persons USING btree (email);
+CREATE INDEX index_persons_on_first_name ON persons USING btree (first_name);
+CREATE INDEX index_persons_on_last_name ON persons USING btree (last_name);
+CREATE INDEX index_persons_on_name ON persons USING btree (name);
+CREATE INDEX index_persons_on_created_at ON persons USING btree (created_at);
+CREATE INDEX index_persons_on_updated_at ON persons USING btree (updated_at);
+```
+
+Normally I would see developers write:
+
+``` ruby
+class CombineFirstNameAndLastNameOnPersons < ActiveRecord::Migration
+   def change
+     Person.find_each do |person|
+       person.name = person.first_name + " " + person.last_name
+       person.save
+     end
+   end
+  end
+end
+```
+
+However it's painful for two reasons:
+
+  - `Person` might not always be the model class
+  - `Person` might not always have `first_name`, `last_name`
+  - You probably don't actually want to run callbacks
+  - So much. G
+  - arba
+  - ge collec
+  - tion.
+
+Instead I suggest two things:
+
+  1. Keep your data changes into a rake task. More portable, easier to know what you have access too.
+  2. Use my write:
+
+``` ruby
+namespace :db do
+  namespace :migrations do
+    desc 'combine Person first_name & last_name into name'
+    task combine_person_first_name_and_last_name_into_name: :environment do
+      Person.write(columns: [:id, :first_name, :last_name]) do |id, first_name, last_name|
+        insert(id, name: "#{first_name} #{last_name}")
+      end
+    end
+  end
+end
+```
 
 
 Installing
@@ -27,7 +103,7 @@ Installing
 
 Add this line to your application's Gemfile:
 
-    gem "blankgem", "~> 1.0"
+    gem "active_record-write", "~> 1.0"
 
 And then execute:
 
@@ -35,7 +111,7 @@ And then execute:
 
 Or install it yourself with:
 
-    $ gem install blankgem
+    $ gem install write
 
 
 Contributing
