@@ -90,12 +90,43 @@ namespace :db do
     desc 'combine Person first_name & last_name into name'
     task combine_person_first_name_and_last_name_into_name: :environment do
       Person.write(columns: [:id, :first_name, :last_name]) do |id, first_name, last_name|
-        insert(id, name: "#{first_name} #{last_name}")
+        update(id, name: "#{first_name} #{last_name}")
       end
     end
   end
 end
 ```
+
+Every `write()` function needs to end in either a single `insert()`, `update()`, or `Arel::*Manager` or an array of those:
+
+``` ruby
+Cart.write(columns: [:items_as_json], target: 'items') do |items|
+  items.map do |item|
+    insert(item)
+  end
+end
+```
+
+As above, to specify a different table from the `ActiveRecord::Base` subject provide the `target: "..."` argument.
+
+Each of these blocks gets executed, inside a transaction, concurrently for each available connection pool it can freely access up to size:
+
+``` ruby
+Cart.write(columns: [:items_as_json], size: 100)
+```
+
+In order to have a more focused query use the `query: ...` keyword:
+
+``` ruby
+Cart.write(query: Cart.where(%|"carts"."items" ->> IS NOT NULL|), columns: [:items_as_json])
+```
+
+By default write will assume complex data structures (`Array` or `Hash`) should be serialized via `JSON`, instead you can:
+
+``` ruby
+Cart.write(columns: [:id], serialize: YAML)
+```
+
 
 
 Installing
@@ -128,7 +159,7 @@ Contributing
 License
 =======
 
-Copyright (c) 2014, 2015 Kurtis Rainbolt-Greene
+Copyright (c) 2015 Laurel & Wolf
 
 MIT License
 
