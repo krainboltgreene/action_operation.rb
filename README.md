@@ -5,12 +5,12 @@ active_record-write
   - [![Coverage](http://img.shields.io/codeclimate/coverage/github/laurelandwolf/active_record-write.gem.svg?style=flat-square)](https://codeclimate.com/github/laurelandwolf/active_record-write.gem)
   - [![Build](http://img.shields.io/travis-ci/laurelandwolf/active_record-write.gem.svg?style=flat-square)](https://travis-ci.org/laurelandwolf/active_record-write.gem)
   - [![Dependencies](http://img.shields.io/gemnasium/laurelandwolf/active_record-write.gem.svg?style=flat-square)](https://gemnasium.com/laurelandwolf/active_record-write.gem)
-  - [![Downloads](http://img.shields.io/gem/dtv/write.svg?style=flat-square)](https://rubygems.org/gems/write)
+  - [![Downloads](http://img.shields.io/gem/dtv/active_record-write.svg?style=flat-square)](https://rubygems.org/gems/active_record-write)
   - [![Tags](http://img.shields.io/github/tag/laurelandwolf/active_record-write.gem.svg?style=flat-square)](http://github.com/laurelandwolf/active_record-write.gem/tags)
   - [![Releases](http://img.shields.io/github/release/laurelandwolf/active_record-write.gem.svg?style=flat-square)](http://github.com/laurelandwolf/active_record-write.gem/releases)
   - [![Issues](http://img.shields.io/github/issues/laurelandwolf/active_record-write.gem.svg?style=flat-square)](http://github.com/laurelandwolf/active_record-write.gem/issues)
   - [![License](http://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](http://opensource.org/licenses/MIT)
-  - [![Version](http://img.shields.io/gem/v/write.svg?style=flat-square)](https://rubygems.org/gems/active_record-write)
+  - [![Version](http://img.shields.io/gem/v/active_record-write.svg?style=flat-square)](https://rubygems.org/gems/active_record-write)
 
 
 active_record-write is an extension to active_record that gives you an interface to write high-speed inserts & updates in a manageable way.
