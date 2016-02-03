@@ -32,7 +32,7 @@ module ActiveRecord
       when arel?
         ActiveRecord::Base.connection.execute(@query.to_sql).map(&:values)
       when tuple?
-        @query.map(&:values)
+        @query.map { |result| result.slice(@columns) }
       when twodimensional?
         @query
       else
