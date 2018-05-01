@@ -1,0 +1,14 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "action_operation"
+require "pry"
+
+require_relative "../spec/support/external"
+require_relative "../spec/support/add_to_cart_operation"
+require_relative "../spec/support/azure_upload_operation"
+require_relative "../spec/support/s3_upload_operation"
+require_relative "../spec/support/spaces_upload_operation"
+require_relative "../spec/support/document_upload_operation"
+
+Pry.start

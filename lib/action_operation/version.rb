@@ -1,3 +1,3 @@
-module Blankgem
+module ActionOperation
   VERSION = "1.0.0"
 end

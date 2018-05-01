@@ -1,6 +1,13 @@
 require "pry"
 require "rspec"
-require "blank-gem"
+require "action_operation"
+
+require_relative "support/external"
+require_relative "support/add_to_cart_operation"
+require_relative "support/azure_upload_operation"
+require_relative "support/s3_upload_operation"
+require_relative "support/spaces_upload_operation"
+require_relative "support/document_upload_operation"
 
 RSpec.configure do |let|
   # Exit the spec after the first failure
