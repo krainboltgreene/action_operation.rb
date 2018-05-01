@@ -7,8 +7,10 @@ class SpacesUploadOperation
     field :document, type: Types.Instance(Document)
   end
   step :upload do |state|
-    fresh(document: state.document, location: Spaces.push(state.document))
-  rescue StandardError => exception
-    raise FailedUploadError
+    begin
+      fresh(document: state.document, location: Spaces.push(state.document))
+    rescue StandardError => exception
+      raise FailedUploadError
+    end
   end
 end

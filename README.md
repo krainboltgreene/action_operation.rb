@@ -240,7 +240,7 @@ Each task is a map function wrapped in a HOC for handling the return data. The a
 
 Add this line to your application's Gemfile:
 
-    gem "action_operation", "1.0.0"
+    gem "action_operation", "1.1.0"
 
 And then execute:
 

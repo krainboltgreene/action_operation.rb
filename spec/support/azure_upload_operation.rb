@@ -7,8 +7,10 @@ class AzureUploadOperation
     field :document, type: Types.Instance(Document)
   end
   step :upload do |state|
-    fresh(document: state.document, location: Azure.push(state.document))
-  rescue StandardError => exception
-    raise FailedUploadError
+    begin
+      fresh(document: state.document, location: Azure.push(state.document))
+    rescue StandardError => exception
+      raise FailedUploadError
+    end
   end
 end

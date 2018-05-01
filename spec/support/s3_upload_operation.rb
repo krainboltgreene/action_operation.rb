@@ -7,8 +7,10 @@ class S3UploadOperation
     field :document, type: Types.Instance(Document)
   end
   step :upload do |state|
-    fresh(document: state.document, location: S3.push(state.document))
-  rescue StandardError => exception
-    raise FailedUploadError
+    begin
+      fresh(document: state.document, location: S3.push(state.document))
+    rescue StandardError => exception
+      raise FailedUploadError
+    end
   end
 end
