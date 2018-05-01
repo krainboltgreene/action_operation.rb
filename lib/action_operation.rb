@@ -80,6 +80,14 @@ module ActionOperation
   end
 
   class_methods do
+    def inherited(klass)
+      klass.class_eval do
+        step :reraise do |exception|
+          raise exception
+        end
+      end
+    end
+
     def state(name, &structure)
       schemas[name] = Class.new do
         include(SmartParams)

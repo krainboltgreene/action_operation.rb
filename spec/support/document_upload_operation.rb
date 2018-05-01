@@ -1,5 +1,4 @@
-class DocumentUploadOperation
-  include ActionOperation
+class DocumentUploadOperation < ApplicationOperation
 
   task :upload_to_s3, receiver: S3UploadOperation, as: :upload
   task :upload_to_azure, receiver: AzureUploadOperation, as: :upload, required: false

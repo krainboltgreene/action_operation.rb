@@ -3,6 +3,7 @@ require "rspec"
 require "action_operation"
 
 require_relative "support/external"
+require_relative "support/application_operation"
 require_relative "support/add_to_cart_operation"
 require_relative "support/azure_upload_operation"
 require_relative "support/s3_upload_operation"

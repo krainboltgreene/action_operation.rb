@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email = ["kurtis@rainbolt-greene.online"]
   spec.summary = %q{A set of BPMN style operation logic}
   spec.description = spec.summary
-  spec.homepage = "http://krainboltgreene.github.io/action_operation"
+  spec.homepage = "http://github.com/krainboltgreene/action_operation.rb"
   spec.license = "ISC"
 
   spec.files = Dir[File.join("lib", "**", "*"), "LICENSE", "README.md", "Rakefile"]
