@@ -6,62 +6,63 @@ module ActionOperation
   extend ActiveSupport::Concern
 
   require_relative "action_operation/version"
-  require_relative "action_operation/types"
   require_relative "action_operation/error"
+  require_relative "action_operation/types"
 
   State = Struct.new(:raw)
   Drift = Struct.new(:to)
-
-  attr_reader :raw
-  attr_reader :state
-  attr_reader :step
+  Task = Struct.new(:name, :required)
+  Catch = Struct.new(:name, :exception)
 
   def initialize(raw:)
+    raise ArgumentError, "needs to be a Hash" unless raw.kind_of?(Hash)
+
     @raw = raw
   end
 
-  def call(forced: nil)
-    right.from(forced || 0).reduce(state || raw) do |state, function|
-      next state unless function.required || (forced && right.at(forced) == function)
+  def call(start: nil, raw: @raw)
+    right.from(start || 0).reduce(raw) do |state, step|
+      next state unless step.required || (start && right.at(start) == step)
 
-      # NOTE: We store this so we can go drift back if an error tells us to
-      @state = state
+      raise Error::MissingTask, step unless respond_to?(step.name)
+      raise Error::MissingSchema, step unless self.class.schemas.key?(step.name)
 
-      # NOTE: We store this so an error step can ask for the last ran step
-      @step = function.name
+      # NOTE: We only care about this so we can refernece it in the rescue
+      @latest_step = step
 
-      raise Error::MissingTask, function unless function.receiver.steps.key?(function.as)
-      raise Error::MissingSchemaForTask, function unless function.receiver.schemas.key?(function.as)
-
-      value = instance_exec(function.receiver.schemas.fetch(function.as).new(state), &function.receiver.steps.fetch(function.as))
+      value = public_send(step.name, state: self.class.schemas.fetch(step.name).new(state))
 
       case value
       when State then value.raw
-      when Drift then break call(forced: right.find_index { |step| step.name == value.to })
+      when Drift then break call(start: right.find_index { |step| step.name == value.to }, raw: raw)
       else state
       end
     end
-  rescue *left.select(&:catch).map(&:catch).uniq => handled_exception
+  rescue *left.select(&:exception).map(&:exception).uniq => handled_exception
     left.select do |failure|
-      failure.catch === handled_exception
-    end.reduce(handled_exception) do |exception, function|
-      raise Error::MissingError, function unless function.receiver.steps.key?(function.as)
+      failure.exception === handled_exception
+    end.reduce(handled_exception) do |exception, step|
+      raise Error::MissingError, step unless respond_to?(step.name)
 
-      value = instance_exec(exception, @state, @step, &function.receiver.steps.fetch(function.as))
+      value = public_send(step.name, exception: exception, state: self.class.schemas.fetch(@latest_step.name).new(raw), step: @latest_step)
 
       if value.kind_of?(Drift)
-        break call(forced: right.find_index { |step| step.name == value.to })
+        break call(start: right.find_index { |step| step.name == value.to }, raw: raw)
       else
         exception
       end
     end
   end
 
-  def fresh(raw)
-    State.new(raw)
+  def fresh(state:)
+    raise ArgumentError, "needs to be a Hash" unless state.kind_of?(Hash)
+
+    State.new(state)
   end
 
   def drift(to:)
+    raise ArgumentError, "needs to be a Symbol or String" unless to.kind_of?(Symbol) || to.kind_of?(String)
+
     Drift.new(to)
   end
 
@@ -73,22 +74,16 @@ module ActionOperation
     self.class.right
   end
 
-  included do
-    step :reraise do |exception|
-      raise exception
-    end
+  def reraise(exception:, **)
+    raise exception
   end
 
   class_methods do
-    def inherited(klass)
-      klass.class_eval do
-        step :reraise do |exception|
-          raise exception
-        end
-      end
+    def call(raw = {})
+      new(raw: raw).call
     end
 
-    def state(name, &structure)
+    def schema(name, &structure)
       schemas[name] = Class.new do
         include(SmartParams)
 
@@ -96,20 +91,12 @@ module ActionOperation
       end
     end
 
-    def task(name, receiver: self, as: name, required: true)
-      right.<<(OpenStruct.new({name: name, as: as, receiver: receiver || self, required: required}))
+    def task(name, required: true)
+      right << Task.new(name, required)
     end
 
-    def error(name, receiver: self, catch: StandardError, as: name)
-      left.<<(OpenStruct.new({name: name, as: as, receiver: receiver || self, catch: catch || StandardError}))
-    end
-
-    def step(name, &process)
-      steps[name] = process
-    end
-
-    def call(raw = {})
-      new(raw: raw).call
+    def catch(name, exception: StandardError)
+      left << Catch.new(name, exception)
     end
 
     def right
@@ -122,10 +109,6 @@ module ActionOperation
 
     def schemas
       @schemas ||= Hash.new
-    end
-
-    def steps
-      @steps ||= Hash.new
     end
   end
 end

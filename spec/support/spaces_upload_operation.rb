@@ -3,14 +3,12 @@ class SpacesUploadOperation
 
   task :upload
 
-  state :upload do
+  schema :upload do
     field :document, type: Types.Instance(Document)
   end
-  step :upload do |state|
-    begin
-      fresh(document: state.document, location: Spaces.push(state.document))
-    rescue StandardError => exception
-      raise FailedUploadError
-    end
+  def upload(state:)
+    fresh(state: {document: state.document, location: Spaces.push(state.document)})
+  rescue StandardError => exception
+    raise FailedUploadError
   end
 end

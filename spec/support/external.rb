@@ -93,12 +93,4 @@ class DocumentSuccessfullyUploadedMessage
 
   def initialize(**keyword_arguments)
   end
-
-  def via_pubsub
-    self
-  end
-
-  def deliver_later!
-    true
-  end
 end

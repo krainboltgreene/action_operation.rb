@@ -1,24 +1,49 @@
 class DocumentUploadOperation < ApplicationOperation
-
-  task :upload_to_s3, receiver: S3UploadOperation, as: :upload
-  task :upload_to_azure, receiver: AzureUploadOperation, as: :upload, required: false
-  task :upload_to_spaces, receiver: SpacesUploadOperation, as: :upload, required: false
+  task :upload_to_s3
+  task :upload_to_azure, required: false
+  task :upload_to_spaces, required: false
   task :publish
-  error :retry, catch: FailedUploadError
-  error :reraise
+  catch :retry, exception: FailedUploadError
+  catch :reraise
 
-  step :retry do |exception, _, step|
-    case step
-    when :upload_to_s3 then drift(to: :upload_to_azure)
-    when :upload_to_azure then drift(to: :upload_to_spaces)
-    end
+  schema :upload_to_s3 do
+    field :document, type: Types.Instance(Document)
+  end
+  def upload_to_s3(state:)
+    fresh(state: S3UploadOperation.(document: state.document))
   end
 
-  state :publish do
+  schema :upload_to_azure do
+    field :document, type: Types.Instance(Document)
+  end
+  def upload_to_azure(state:)
+    fresh(state: AzureUploadOperation.(document: state.document))
+  end
+
+  schema :upload_to_spaces do
+    field :document, type: Types.Instance(Document)
+  end
+  def upload_to_spaces(state:)
+    fresh(state: SpacesUploadOperation.(document: state.document))
+  end
+
+  schema :publish do
     field :document, type: Types.Instance(Document)
     field :location, type: Types::Strict::String
   end
-  step :publish do |state|
-    DocumentSuccessfullyUploadedMessage.(owner: state.document.owner, location: state.location).via_pubsub.deliver_later!
+  def publish(state:)
+    DocumentSuccessfullyUploadedMessage.(
+      to: state.document.owner,
+      subject: state.location,
+      via: :pubsub,
+      deliver: :later
+    )
+  end
+
+  def retry(exception:, step:, **)
+    case step.name
+    when :upload_to_s3 then drift(to: :upload_to_azure)
+    when :upload_to_azure then drift(to: :upload_to_spaces)
+    end
   end
 end

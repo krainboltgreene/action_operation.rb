@@ -6,50 +6,50 @@ class AddToCartOperation
   task :lock
   task :persist
   task :publish
-  error :notify, catch: ProductMissingFromCartItemError
-  error :reraise
+  catch :notify, exception: ProductMissingFromCartItemError
+  catch :reraise
 
-  state :check_for_missing_product do
+  schema :check_for_missing_product do
     field :cart_item, type: Types.Instance(CartItem)
   end
-  step :check_for_missing_product do |state|
+  def check_for_missing_product(state:)
     raise ProductMissingFromCartItemError if state.cart_item.product.nil?
   end
 
-  state :carbon_copy_cart_item do
+  schema :carbon_copy_cart_item do
     field :cart_item, type: Types.Instance(CartItem)
   end
-  step :carbon_copy_cart_item do |state|
+  def carbon_copy_cart_item(state:)
     state.cart_item.carbon_copy
   end
 
-  state :lock do
+  schema :lock do
     field :cart_item, type: Types.Instance(CartItem)
   end
-  step :lock do |state|
+  def lock(state:)
     GlobalLock.(state.cart_item.owner, state.cart_item, expires_in: 15.minutes)
   end
 
-  state :persist do
+  schema :persist do
     field :cart_item, type: Types.Instance(CartItem)
   end
-  step :persist do |state|
+  def persist(state:)
     CartItem.transaction do
       state.cart_item.save!
     end
 
-    fresh(current_account: state.cart_item.owner, cart_item: state.cart_item)
+    fresh(state: {current_account: state.cart_item.owner, cart_item: state.cart_item})
   end
 
-  state :publish do
+  schema :publish do
     field :cart_item, type: Types.Instance(CartItem)
     field :current_account, type: Types.Instance(Account)
   end
-  step :publish do |state|
+  def publish(state:)
     CartItemPickedMessage.(subject: state.cart_item, to: state.current_account).via_pubsub.deliver_later!
   end
 
-  step :notify do |exception|
+  def notify(excepion:, **)
     Bugsnag.notify(exception)
   end
 end
