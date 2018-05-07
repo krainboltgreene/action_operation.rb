@@ -20,12 +20,6 @@ module ActionOperation
     @raw = raw
   end
 
-  private def callbackings(arounds, &process)
-    arounds.reverse.reduce(process) do |compound, callback|
-      callback.call(&compound).call
-    end.call
-  end
-
   def call(start: nil, raw: @raw)
     around_steps do
       begin
