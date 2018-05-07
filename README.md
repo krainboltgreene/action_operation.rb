@@ -234,6 +234,64 @@ So here's how this works:
 However, if it finishes successfully we get to push a notification to the document owner in `publish()`.
 
 
+### Callbacks
+
+Sometimes we want to make sure an operation or it's individual parts are wrapped in safety measures, like a transaction or a timeout. You can achieve these with special built in instance methods. I'll show you each one and why you would use it.
+
+To start, the highest wrapper is `around_steps`, which wraps around both tasks and catches. A good use for this is
+
+``` ruby
+class AddProductToCart < ApplicationOperation
+  def around_steps(raw:)
+    Rails.logger.tagged("operation-id=#{SecureRandom.uuid}") do
+      Rails.logger.debug("Started adding cart to product operation with (#{raw.to_json})")
+
+      yield
+    end
+  end
+end
+```
+
+Here we're making sure every log we write will be tagged with a unique identifier for the entire operation, an extremely valuable option for debugging. The `around_steps` hook will be told about the raw data it receives in the call (`AddProductToCart.({cart: current_cart, product: product})`).
+
+While `around_steps` is on the entire operation, you might want individual wrapping. Let me present: `around_step`!
+
+``` ruby
+class AddProductToCart < ApplicationOperation
+  def around_step(step:)
+    Rails.logger.tagged("step-id=#{SecureRandom.uuid}") do
+      yield
+    end
+  end
+end
+```
+
+This `around_step` will give you a per-step unique id tag for all logs in a step, another fantastic tool in debugging. This hook will be told of the `Task|Catch` object which responds to `#name` and `#receiver`. Additionally a `Task` responds to `#required` and a `Catch` responds to `#exception`.
+
+Finally, there are 4 other type specific hooks: `around_tasks`, `around_task`, `around_catches`, and `around_catch`. Here are example uses:
+
+
+``` ruby
+class AddProductToCart < ApplicationOperation
+  def around_tasks
+    Timeout.new(30.seconds) do
+      yield
+    end
+  end
+
+  def around_task(step:, state:)
+    Rails.logger.debug("Working on #{step.receiver}##{step.name} using (#{state.to_json})")
+
+    Timeout.new(10.seconds) do
+      ApplicationRecord.transaction do
+        yield
+      end
+    end
+  end
+end
+```
+
+
 ## Installing
 
 Add this line to your application's Gemfile:
