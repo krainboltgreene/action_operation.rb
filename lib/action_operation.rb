@@ -47,8 +47,10 @@ module ActionOperation
       # puts "#{step.class}::#{step.receiver}##{step.name}"
 
       begin
-        value = around_task(state: self.class.schemas.fetch(step.name).new(state), raw: raw, step: step) do
-          public_send(step.name, state: self.class.schemas.fetch(step.name).new(state))
+        value = around_step(state: self.class.schemas.fetch(step.name).new(state), raw: raw, step: step) do
+          around_task(state: self.class.schemas.fetch(step.name).new(state), raw: raw, step: step) do
+            public_send(step.name, state: self.class.schemas.fetch(step.name).new(state))
+          end
         end
         # puts "#{step.class}::#{step.receiver}##{step.name} #{value}"
       rescue SmartParams::Error::InvalidPropertyType => invalid_property_type_exception
@@ -72,8 +74,10 @@ module ActionOperation
       # puts "#{step.class}::#{step.receiver}##{step.name}"
 
       begin
-        value = around_catch(exception: exception, raw: raw, step: step) do
-          public_send(step.name, exception: exception, state: raw, step: @latest_step)
+        value = around_step(exception: exception, raw: raw, step: step) do
+          around_catch(exception: exception, raw: raw, step: step) do
+            public_send(step.name, exception: exception, state: raw, step: @latest_step)
+          end
         end
         # puts "#{step.class}::#{step.receiver}##{step.name} #{value}"
       rescue SmartParams::Error::InvalidPropertyType => invalid_property_type_exception
@@ -100,28 +104,28 @@ module ActionOperation
     Drift.new(to)
   end
 
-  def around_steps(&callback)
-    callback.call
+  def around_steps(raw:, &callback)
+    callback.call(raw: raw)
   end
 
-  def around_step(&callback)
-    callback.call
+  def around_step(state: nil, exception: nil, raw:, step:, &callback)
+    callback.call(state: state, exception: exception, raw: raw, step: step)
   end
 
-  def around_tasks(&callback)
-    callback.call
+  def around_tasks(raw:, &callback)
+    callback.call(raw: raw)
   end
 
-  def around_task(&callback)
-    callback.call
+  def around_task(state:, raw:, step:, &callback)
+    callback.call(state: state, raw: raw, step: step)
   end
 
-  def around_catches(&callback)
-    callback.call
+  def around_catches(exception:, raw:, &callback)
+    callback.call(exception: exception, raw: raw)
   end
 
-  def around_catch(&callback)
-    callback.call
+  def around_catch(exception:, raw:, step:, &callback)
+    callback.call(exception: exception, raw: raw, step: step)
   end
 
   private def left

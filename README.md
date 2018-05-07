@@ -258,7 +258,7 @@ While `around_steps` is on the entire operation, you might want individual wrapp
 
 ``` ruby
 class AddProductToCart < ApplicationOperation
-  def around_step(step:)
+  def around_step(step:, **)
     Rails.logger.tagged("step-id=#{SecureRandom.uuid}") do
       yield
     end
@@ -273,13 +273,13 @@ Finally, there are 4 other type specific hooks: `around_tasks`, `around_task`, `
 
 ``` ruby
 class AddProductToCart < ApplicationOperation
-  def around_tasks
+  def around_tasks(**)
     Timeout.new(30.seconds) do
       yield
     end
   end
 
-  def around_task(step:, state:)
+  def around_task(step:, state:, **)
     Rails.logger.debug("Working on #{step.receiver}##{step.name} using (#{state.to_json})")
 
     Timeout.new(10.seconds) do

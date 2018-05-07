@@ -6,7 +6,7 @@ class DocumentUploadOperation < ApplicationOperation
   catch :retry, exception: FailedUploadError
   catch :reraise
 
-  def around_steps
+  def around_steps(**)
     logger("around_steps/before")
     yield.tap do
       logger("around_steps/after")
