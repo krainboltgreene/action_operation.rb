@@ -11,8 +11,8 @@ module ActionOperation
 
   State = Struct.new(:raw)
   Drift = Struct.new(:to)
-  Task = Struct.new(:name, :required)
-  Catch = Struct.new(:name, :exception)
+  Task = Struct.new(:name, :receiver, :required)
+  Catch = Struct.new(:name, :receiver, :exception)
 
   def initialize(raw:)
     raise ArgumentError, "needs to be a Hash" unless raw.kind_of?(Hash)
@@ -92,11 +92,11 @@ module ActionOperation
     end
 
     def task(name, required: true)
-      right << Task.new(name, required)
+      right << Task.new(name, self, required)
     end
 
     def catch(name, exception: StandardError)
-      left << Catch.new(name, exception)
+      left << Catch.new(name, self, exception)
     end
 
     def right
