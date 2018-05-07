@@ -6,6 +6,13 @@ class DocumentUploadOperation < ApplicationOperation
   catch :retry, exception: FailedUploadError
   catch :reraise
 
+  def around_steps
+    logger("around_steps/before")
+    yield.tap do
+      logger("around_steps/after")
+    end
+  end
+
   schema :upload_to_s3 do
     field :document, type: Types.Instance(Document)
   end
@@ -45,5 +52,9 @@ class DocumentUploadOperation < ApplicationOperation
     when :upload_to_s3 then drift(to: :upload_to_azure)
     when :upload_to_azure then drift(to: :upload_to_spaces)
     end
+  end
+
+  def logger(message)
+    puts(message)
   end
 end
