@@ -296,7 +296,7 @@ end
 
 Add this line to your application's Gemfile:
 
-    gem "action_operation", "2.0.0"
+    gem "action_operation", "2.1.0"
 
 And then execute:
 
