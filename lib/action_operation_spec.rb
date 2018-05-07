@@ -1,10 +1,10 @@
 require "spec_helper"
 
 RSpec.describe ActionOperation do
-  let(:operation) { DocumentUploadOperation }
+  let(:operation) { DocumentUploadOperation.new(raw: arguments) }
 
   describe "#call" do
-    subject { operation.call(arguments) }
+    subject { operation.call }
 
     context "with the right arguments" do
       let(:arguments) {{document: Document.new}}
