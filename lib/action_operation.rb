@@ -21,13 +21,13 @@ module ActionOperation
   end
 
   def call(start: nil, raw: @raw)
-    around_steps do
+    around_steps(raw: raw) do
       begin
-        around_tasks do
+        around_tasks(raw: raw) do
           tasks(start, raw)
         end
       rescue *left.select(&:exception).map(&:exception).uniq => handled_exception
-        around_catches do
+        around_catches(exception: handled_exception, raw: raw) do
           catches(handled_exception, raw)
         end
       end
@@ -47,14 +47,13 @@ module ActionOperation
       # puts "#{step.class}::#{step.receiver}##{step.name}"
 
       begin
-        value = around_task do
+        value = around_task(state: self.class.schemas.fetch(step.name).new(state), raw: raw, step: step) do
           public_send(step.name, state: self.class.schemas.fetch(step.name).new(state))
         end
         # puts "#{step.class}::#{step.receiver}##{step.name} #{value}"
       rescue SmartParams::Error::InvalidPropertyType => invalid_property_type_exception
         raise Error::StepSchemaMismatch, step: step, schema: self.class.schemas.fetch(step.name), raw: raw, cause: invalid_property_type_exception
       end
-
 
       case value
         when State then value.raw
@@ -73,7 +72,7 @@ module ActionOperation
       # puts "#{step.class}::#{step.receiver}##{step.name}"
 
       begin
-        value = around_catch do
+        value = around_catch(exception: exception, raw: raw, step: step) do
           public_send(step.name, exception: exception, state: raw, step: @latest_step)
         end
         # puts "#{step.class}::#{step.receiver}##{step.name} #{value}"
