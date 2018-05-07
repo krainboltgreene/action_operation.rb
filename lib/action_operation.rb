@@ -24,8 +24,8 @@ module ActionOperation
     right.from(start || 0).reduce(raw) do |state, step|
       next state unless step.required || (start && right.at(start) == step)
 
-      raise Error::MissingTask, step unless respond_to?(step.name)
-      raise Error::MissingSchema, step unless self.class.schemas.key?(step.name)
+      raise Error::MissingTask, step: step unless respond_to?(step.name)
+      raise Error::MissingSchema, step: step unless self.class.schemas.key?(step.name)
 
       # NOTE: We only care about this so we can reference it in the rescue
       @latest_step = step
