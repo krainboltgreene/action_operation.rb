@@ -3,7 +3,7 @@
 ## 2.0.0
 
   - [breaking] We now use methods instead of passing around procs defined with `step()`, we now use methods
-  - [breaking] Since we don't use procs, we can't use reciever or as, now it's just up to the step to do delgation
+  - [breaking] Since we don't use procs, we can't use receiver or as, now it's just up to the step to do delegation
   - [breaking] renamed the `state()` function to be called `schema()`
   - [breaking] `error` listings are now defined with `catch`
   - [breaking] `error`'s no longer have a receiver or an as property

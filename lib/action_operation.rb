@@ -27,7 +27,7 @@ module ActionOperation
       raise Error::MissingTask, step unless respond_to?(step.name)
       raise Error::MissingSchema, step unless self.class.schemas.key?(step.name)
 
-      # NOTE: We only care about this so we can refernece it in the rescue
+      # NOTE: We only care about this so we can reference it in the rescue
       @latest_step = step
 
       value = public_send(step.name, state: self.class.schemas.fetch(step.name).new(state))
