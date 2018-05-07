@@ -1,13 +1,23 @@
 require "spec_helper"
 
 RSpec.describe ActionOperation do
-  let(:operation) { DocumentUploadOperation }
+  let(:operation) { DocumentUploadOperation.new(raw: arguments) }
+
+  before do
+    allow(operation).to receive(:logger)
+  end
 
   describe "#call" do
-    subject { operation.call(arguments) }
+    subject { operation.call }
 
     context "with the right arguments" do
       let(:arguments) {{document: Document.new}}
+
+      it "calls the around steps callback" do
+        expect(operation).to receive(:logger).twice
+
+        subject
+      end
 
       it "works" do
         expect(subject).to match(hash_including(document: a_kind_of(Document), location: "some.s3"))
