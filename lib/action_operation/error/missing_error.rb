@@ -1,7 +1,7 @@
 module ActionOperation
   class Error
     class MissingError < Error
-      def initialize(step)
+      def initialize(step:)
         @step = step
       end
 
