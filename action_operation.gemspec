@@ -24,6 +24,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 12.2"
   spec.add_development_dependency "pry", "~> 0.11"
   spec.add_development_dependency "pry-doc", "~> 0.11"
-  spec.add_runtime_dependency "activesupport", ">= 4.0.0", ">= 4.1", ">= 5.0.0", ">= 5.1"
+  spec.add_runtime_dependency "activesupport", ">= 4.0.0", ">= 4.1", ">= 5.0.0", ">= 5.2"
   spec.add_runtime_dependency "smart_params", ">= 2.0"
 end
